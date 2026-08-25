@@ -1,0 +1,72 @@
+package attachFileFromRecord;
+
+import java.time.Duration;
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+
+public class Uploadedbyfilter extends AttachFromRecordNavigation {
+
+	// ---------- Locators ----------
+
+	
+	private final By Uploadedbydropdwon  = By.xpath("(//input[@class='select2-search__field'])[2]");
+	private final By Searchusername   =By.xpath("//li[contains(@class,'select2-results__option')][.//span[@title='Kinjal Mogha']]");
+	private final By FileListing     = By.xpath("//div[@class='attach-file-list-container']");
+	private final By Allfilerows     = By.xpath(".//attach-file-list-item[@class='attach-file-list-item']");
+	private final By Filename        = By.xpath(".//div[@class='file-name']");
+	private final By Uploader        = By.xpath(".//span[@class='meta-item'][3]");
+
+	private WebDriverWait getWait() {
+		return new WebDriverWait(driver, Duration.ofSeconds(20));
+	}
+
+	public void dropdwonclick() {
+
+
+		WebDriverWait wait = getWait();
+		wait.until(ExpectedConditions.visibilityOfElementLocated(Uploadedbydropdwon));
+		driver.findElement(Uploadedbydropdwon).click();
+		System.out.println("dropdown is clicked");
+		driver .findElement(Searchusername).click();
+		System.out.println("Selected 'Kinjal Mogha' from Uploaded by filter");
+
+	}
+
+	/**
+	 * Verifies every row in the listing shows expectedUploader as the
+	 * "Uploaded by" value, after the dropdown filter has been applied.
+	 */
+	public void verifyListingFilteredByUploader(String expectedUploader) {
+		
+		WebDriverWait wait = getWait();
+		wait.until(ExpectedConditions.visibilityOfElementLocated(Uploadedbydropdwon));
+		driver.findElement(Uploadedbydropdwon).click();
+		System.out.println("dropdown is clicked");
+		driver .findElement(Searchusername).click();
+		System.out.println("Selected 'Kinjal Mogha' from Uploaded by filter");
+
+		wait.until(ExpectedConditions.visibilityOfElementLocated(Allfilerows));
+
+		List<WebElement> rows = driver.findElement(FileListing).findElements(Allfilerows);
+		Assert.assertTrue(!rows.isEmpty(), "No file rows found after filtering by uploader: " + expectedUploader);
+		System.out.println("Total rows after filter: " + rows.size());
+
+		for (WebElement row : rows) {
+			String fileName = row.findElement(Filename).getText().trim();
+			String uploader = row.findElement(Uploader).getText().trim();
+
+			Assert.assertEquals(uploader, expectedUploader,
+					"File '" + fileName + "' was uploaded by '" + uploader
+					+ "' but expected only files from '" + expectedUploader + "'");
+			System.out.println("Verified '" + fileName + "' uploaded by " + uploader);
+		}
+
+		System.out.println("All " + rows.size() + " file(s) verified as uploaded by: " + expectedUploader);
+	}
+
+}

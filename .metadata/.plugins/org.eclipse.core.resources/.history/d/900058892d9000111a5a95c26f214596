@@ -1,0 +1,199 @@
+package attachFileFromRecord;
+
+import java.time.Duration;
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+
+public class Uploadedbyfilter extends AttachFromRecordNavigation {
+
+	// ---------- Locators ----------
+
+	private final By uploadedByTrigger  = By.xpath(
+			"//select[contains(@id,'uploadedBy')]/following-sibling::span[contains(@class,'select2-container')]"
+			+ "//span[contains(@class,'select2-selection--multiple')]");
+	private final By dropdownPanel      = By.xpath("//span[@class='select2-dropdown select2-dropdown--below']");
+	private final By selectAllLink      = By.id("select_all");
+	private final By unselectAllLink    = By.id("unselect_all");
+	private final By fileListing        = By.xpath("//div[@class='attach-file-list-container']");
+	private final By allFileRowsLocator = By.xpath(".//attach-file-list-item[@class='attach-file-list-item']");
+	private final By uploaderInRow      = By.xpath(".//span[@class='meta-item'][3]");
+	private final By emptyStateTitle    = By.xpath("//h5[@class='empty-state-title']");
+	private final By totalFilesText     = By.xpath("//div[contains(text(),'Total') and contains(text(),'files')]");
+
+	private WebDriverWait getWait() {
+		return new WebDriverWait(driver, Duration.ofSeconds(20));
+	}
+
+	// Dynamic locator: the checkbox for a given uploader's row inside the dropdown
+	private By checkboxForUser(String name) {
+		return By.xpath("//span[normalize-space()='" + name + "']/preceding-sibling::input[@type='checkbox'] | "
+				+ "//span[normalize-space()='" + name + "']/parent::*//input[@type='checkbox']");
+	}
+
+	// ---------- Dropdown helpers ----------
+
+	private void openDropdown() {
+		getWait().until(ExpectedConditions.elementToBeClickable(uploadedByTrigger)).click();
+		getWait().until(ExpectedConditions.visibilityOfElementLocated(dropdownPanel));
+		System.out.println("Opened 'Uploaded by' dropdown");
+	}
+
+	private void closeDropdown() {
+		driver.findElement(uploadedByTrigger).click();
+		System.out.println("Closed 'Uploaded by' dropdown");
+	}
+
+	private void waitForListToSettle() {
+		getWait().until(ExpectedConditions.or(
+				ExpectedConditions.visibilityOfElementLocated(allFileRowsLocator),
+				ExpectedConditions.visibilityOfElementLocated(emptyStateTitle)
+		));
+	}
+
+	private List<WebElement> getVisibleFileRows() {
+		return driver.findElements(allFileRowsLocator);
+	}
+
+	private int getTotalFilesFromCounter() {
+		String text = driver.findElement(totalFilesText).getText(); // e.g. "Total 7 files"
+		return Integer.parseInt(text.replaceAll("[^0-9]", ""));
+	}
+
+	// ---------- Scenario 1: Default state shows all files ----------
+	public void verifyDefaultUploadedByShowsAllFiles() {
+		String triggerText = driver.findElement(uploadedByTrigger).getText().trim();
+		Assert.assertEquals(triggerText, "All", "Default 'Uploaded by' filter should show 'All'");
+
+		waitForListToSettle();
+		List<WebElement> rows = getVisibleFileRows();
+		int total = getTotalFilesFromCounter();
+		Assert.assertEquals(rows.size(), total, "Visible rows should match total file count by default");
+		System.out.println("Default state verified: " + rows.size() + " files shown, matches total: " + total);
+	}
+
+	// ---------- Scenario 2: Single uploader selection ----------
+	public void filterBySingleUploader(String uploaderName) {
+		openDropdown();
+		driver.findElement(unselectAllLink).click();
+		driver.findElement(checkboxForUser(uploaderName)).click();
+		closeDropdown();
+		waitForListToSettle();
+
+		List<WebElement> rows = getVisibleFileRows();
+		Assert.assertTrue(rows.size() > 0, "Expected at least one file for uploader: " + uploaderName);
+
+		for (WebElement row : rows) {
+			String uploader = row.findElement(uploaderInRow).getText().trim();
+			Assert.assertEquals(uploader, uploaderName,
+					"Found a file not uploaded by " + uploaderName + " -> " + uploader);
+		}
+		System.out.println("Verified all " + rows.size() + " visible files were uploaded by: " + uploaderName);
+	}
+
+	// ---------- Scenario 3: Uploader with zero files shows empty state ----------
+	public void filterByUploaderWithNoFiles(String uploaderName) {
+		openDropdown();
+		driver.findElement(unselectAllLink).click();
+		driver.findElement(checkboxForUser(uploaderName)).click();
+		closeDropdown();
+		waitForListToSettle();
+
+		Assert.assertTrue(driver.findElements(emptyStateTitle).size() > 0,
+				"Expected empty state for uploader with no files: " + uploaderName);
+		String title = driver.findElement(emptyStateTitle).getText().trim();
+		Assert.assertEquals(title, "No files found", "Wrong empty-state title");
+		System.out.println("Verified empty state correctly shown for uploader with no files: " + uploaderName);
+	}
+
+	// ---------- Scenario 4: Multiple uploaders selected (union of files) ----------
+	public void filterByMultipleUploaders(List<String> uploaderNames) {
+		openDropdown();
+		driver.findElement(unselectAllLink).click();
+		for (String name : uploaderNames) {
+			driver.findElement(checkboxForUser(name)).click();
+		}
+		closeDropdown();
+		waitForListToSettle();
+
+		List<WebElement> rows = getVisibleFileRows();
+		Assert.assertTrue(rows.size() > 0, "Expected at least one file for uploaders: " + uploaderNames);
+
+		for (WebElement row : rows) {
+			String uploader = row.findElement(uploaderInRow).getText().trim();
+			Assert.assertTrue(uploaderNames.contains(uploader),
+					"Found a file uploaded by someone outside the selected list -> " + uploader);
+		}
+		System.out.println("Verified all " + rows.size() + " visible files were uploaded by one of: " + uploaderNames);
+	}
+
+	// ---------- Scenario 5: 'Select All' shows every file ----------
+	public void clickSelectAllAndVerify() {
+		openDropdown();
+		driver.findElement(selectAllLink).click();
+		closeDropdown();
+		waitForListToSettle();
+
+		List<WebElement> rows = getVisibleFileRows();
+		int total = getTotalFilesFromCounter();
+		Assert.assertEquals(rows.size(), total, "'Select All' should show every file");
+		System.out.println("Verified 'Select All' shows all " + total + " files");
+	}
+
+	// ---------- Scenario 6: 'Unselect All' clears the filter ----------
+	// NOTE: confirm the real expected behavior manually first — this assumes
+	// unselecting every uploader results in the empty state (no uploader = no match).
+	// Adjust the assertion if the app instead falls back to showing all files.
+	public void clickUnselectAllAndVerify() {
+		openDropdown();
+		driver.findElement(unselectAllLink).click();
+		closeDropdown();
+		waitForListToSettle();
+
+		Assert.assertTrue(driver.findElements(emptyStateTitle).size() > 0,
+				"Expected empty state after 'Unselect All'");
+		System.out.println("Verified 'Unselect All' behavior");
+	}
+
+	// ---------- Scenario 7: Trigger label updates after selection ----------
+	public void verifyTriggerLabelUpdates(String uploaderName) {
+		openDropdown();
+		driver.findElement(unselectAllLink).click();
+		driver.findElement(checkboxForUser(uploaderName)).click();
+		closeDropdown();
+
+		String triggerText = driver.findElement(uploadedByTrigger).getText().trim();
+		Assert.assertNotEquals(triggerText, "All",
+				"Trigger label should no longer say 'All' after selecting an uploader");
+		System.out.println("Trigger label after selection: " + triggerText);
+	}
+
+	// ---------- Scenario 8: Selection persists when dropdown is reopened ----------
+	public void verifySelectionPersistsOnReopen(String uploaderName) {
+		openDropdown();
+		driver.findElement(unselectAllLink).click();
+		driver.findElement(checkboxForUser(uploaderName)).click();
+		closeDropdown();
+
+		openDropdown();
+		WebElement checkbox = driver.findElement(checkboxForUser(uploaderName));
+		Assert.assertTrue(checkbox.isSelected(), "Checkbox for " + uploaderName + " should remain checked on reopen");
+		System.out.println("Verified selection for " + uploaderName + " persisted after reopening dropdown");
+		closeDropdown();
+	}
+
+	// ---------- Scenario 9: File counter matches visible rows ----------
+	public void verifyFileCountMatchesVisibleRows() {
+		waitForListToSettle();
+		List<WebElement> rows = getVisibleFileRows();
+		int counterValue = getTotalFilesFromCounter();
+		Assert.assertEquals(rows.size(), counterValue,
+				"Displayed file count (" + rows.size() + ") does not match counter text (" + counterValue + ")");
+		System.out.println("Verified file counter matches visible rows: " + counterValue);
+	}
+
+}

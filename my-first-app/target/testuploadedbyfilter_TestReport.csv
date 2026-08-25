@@ -1,0 +1,6 @@
+TestCaseName,InputData,Status,Timestamp,ScreenshotPath
+"singleuploader","",PASS,2026-08-05 23:50:47,""
+"Origanalfilestate","",PASS,2026-08-05 23:50:49,""
+"Emptystate","",PASS,2026-08-05 23:50:50,""
+"testFilterByMultipleUploaders","",PASS,2026-08-05 23:50:52,""
+"testSelectAllShowsAllFiles","",PASS,2026-08-05 23:50:53,""

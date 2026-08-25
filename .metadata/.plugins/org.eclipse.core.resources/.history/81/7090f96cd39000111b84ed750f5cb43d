@@ -1,0 +1,155 @@
+package attachFileFromRecord;
+
+import java.time.Duration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+
+public class Uploadedbyfilter extends AttachFromRecordNavigation {
+
+	// ---------- Locators ----------
+	
+
+	
+	private final By Uploadedbydropdwon  	= By.xpath("(//input[@class='select2-search__field'])[2]");
+	private final By uploaderwithfile1   	= By.xpath("//li[contains(@class,'select2-results__option')][.//span[@title='Kinjal Mogha']]");
+	private final By uploaderwithfile2   	= By.xpath("//li[contains(@class,'select2-results__option')][.//span[@title='Vanita Patel']]");
+	private final By uploaderwithoutfile  	= By.xpath("//li[contains(@class,'select2-results__option')][.//span[@title='Pinki Mishra']]");
+	private final By Unselectall         	= By.id("unselect_all");
+	
+	private final By FileListing     		= By.xpath("//div[@class='attach-file-list-container']");
+	private final By Allfilerows     	 	= By.xpath(".//attach-file-list-item[@class='attach-file-list-item']");
+	private final By Filename        	 	= By.xpath(".//div[@class='file-name']");
+	private final By Uploader        	 	= By.xpath(".//span[@class='meta-item'][3]");
+	private final By Date                	= By.xpath(".//span[@class='meta-item'][1]");
+	private final By Size                	= By.xpath(".//span[@class='meta-item'][2]");
+	private final By emptyStateContainer 	= By.xpath("//div[@class='empty-state w-full']");
+    private final By emptyStateIcon      	= By.xpath("//div[@class='empty-state-icon']");
+    private final By emptyStateTitle    	= By.xpath("//h5[@class='empty-state-title']");
+    private final By emptyStateSubText   	= By.xpath("//div[contains(text(),'Upload a file to this record')]");
+	
+	
+	
+
+	private WebDriverWait getWait() {
+		return new WebDriverWait(driver, Duration.ofSeconds(20));
+	}
+
+	
+
+	/**
+	 * Verifies every row in the listing shows expectedUploader as the
+	 * "Uploaded by" value, after the dropdown filter has been applied.
+	 */
+	public void filterBySingleUploader(String expectedUploader) {
+		
+		WebDriverWait wait = getWait();
+		wait.until(ExpectedConditions.visibilityOfElementLocated(Uploadedbydropdwon));
+		driver.findElement(Uploadedbydropdwon).click();
+		System.out.println("dropdown is clicked");
+		driver .findElement(uploaderwithfile1).click();
+		System.out.println("Selected 'Kinjal Mogha' from Uploaded by filter");
+
+		wait.until(ExpectedConditions.visibilityOfElementLocated(Allfilerows));
+
+		List<WebElement> rows = driver.findElement(FileListing).findElements(Allfilerows);
+		Assert.assertTrue(!rows.isEmpty(), "No file rows found after filtering by uploader: " + expectedUploader);
+		System.out.println("Total rows after filter: " + rows.size());
+
+		for (WebElement row : rows) {
+			String fileName = row.findElement(Filename).getText().trim();
+			String uploader = row.findElement(Uploader).getText().trim();
+
+			Assert.assertEquals(uploader, expectedUploader,
+					"File '" + fileName + "' was uploaded by '" + uploader
+					+ "' but expected only files from '" + expectedUploader + "'");
+			System.out.println("Verified '" + fileName + "' uploaded by " + uploader);
+		}
+
+		System.out.println("All " + rows.size() + " file(s) verified as uploaded by: " + expectedUploader);
+		System.out.println("----------first testcase passed-----------------");
+	}
+	
+	public void Unselectall() throws InterruptedException {
+		wait.until(ExpectedConditions.visibilityOfElementLocated(Unselectall));
+		driver.findElement(Unselectall).click();
+		System.out.println("user selected dropdown is clicked");
+		System.out.println("selected user is successfully deselecteted");
+		Thread.sleep(2000);
+		
+		List<WebElement> allFileRows = driver.findElement(FileListing).findElements(Allfilerows);
+        System.out.println("orignal Total files found: " + allFileRows.size());
+        Assert.assertTrue(allFileRows.size() > 0, "No file rows found!");
+
+        for (WebElement row : allFileRows) {
+
+            // Verify row data
+            String fileName = row.findElement(Filename).getText().trim();
+            String date     = row.findElement(Date).getText().trim();
+            String size     = row.findElement(Size).getText().trim();
+            String uploader = row.findElement(Uploader).getText().trim();
+
+            Assert.assertFalse(fileName.isEmpty(), "File name empty");
+            Assert.assertFalse(date.isEmpty(),     "Date empty");
+            Assert.assertFalse(size.isEmpty(),     "Size empty");
+            Assert.assertFalse(uploader.isEmpty(), "Uploader empty");
+            System.out.println("Row verified: " + fileName + " | " + date + " | " + size + " | " + uploader);
+            
+    	System.out.println("---------------second testcase passed--------------------");
+
+        }
+				
+
+}
+	public void filterByUploaderWithNoFiles(String uploadername) {
+		
+		wait.until(ExpectedConditions.visibilityOfElementLocated(uploaderwithoutfile));
+		driver .findElement(uploaderwithoutfile).click();
+		System.out.println("Selected 'pinki mishra' from Uploaded by filter");
+		wait.until(ExpectedConditions.visibilityOfElementLocated(emptyStateContainer));
+		Assert.assertTrue(driver.findElement(emptyStateContainer).isDisplayed(), "Empty container not visible");
+        Assert.assertTrue(driver.findElement(emptyStateIcon).isDisplayed(), "Empty icon not visible");
+
+        String title = driver.findElement(emptyStateTitle).getText().trim();
+        Assert.assertEquals(title, "No files found", "Wrong title");
+        System.out.println("Empty state title: " + title);
+
+        String subtext = driver.findElement(emptyStateSubText).getText().trim();
+        Assert.assertEquals(subtext, "Upload a file to this record to see it here.", "Wrong subtext");
+        System.out.println("Empty state verified successfully");
+		System.out.println("---------------third testcase passed-----------------");
+
+	}
+	
+	public void filterByMultipleUploaders(List<String> uploaderNames) {
+		
+		driver.findElement(Unselectall).click();
+		driver .findElement(uploaderwithfile1).click();
+		driver .findElement(uploaderwithfile2).click();
+		
+//		wait().until(ExpectedConditions.or(
+//				ExpectedConditions.visibilityOfElementLocated(Allfilerows),
+//				ExpectedConditions.visibilityOfElementLocated(emptyStateTitle)
+//		));
+		wait.until(ExpectedConditions.visibilityOfElementLocated(Allfilerows));
+
+		List<WebElement> allFileRows = driver.findElement(FileListing).findElements(Allfilerows);
+		Assert.assertFalse(allFileRows.isEmpty(), "Expected at least one file for uploaders: " + uploaderNames);
+
+		for (WebElement row : allFileRows) {
+			String uploader = row.findElement(Uploader).getText().trim();
+			Assert.assertTrue(uploaderNames.contains(uploader),
+					"Found a file uploaded by someone outside the selected list -> " + uploader);
+		}
+		System.out.println("Verified all " + allFileRows.size() + " visible files were uploaded by one of: " + uploaderNames);
+		
+		
+	}
+	
+}

@@ -1,0 +1,58 @@
+package testAttachFileFromRecord;
+
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
+
+import attachFileFromRecord.Search;
+import utilitytest.SearchDataProvider;
+import listeners.ReportListener;
+
+@Listeners(ReportListener.class)
+public class testSearch extends Search {
+	
+	
+
+	@BeforeClass(alwaysRun = true)
+//	@BeforeClass
+	public void init() throws Exception {
+		System.out.println(">>> testSearch INIT ENTERED <<<");
+		setup();        // Browser open and open the login page
+		loginOnce();
+		navigateToFileListingOnce();
+		
+        
+//        commentout below code when to run this file seperatly and comment the login and navigate method also commenout teardown method
+		
+//		validLogin();   // Login only ONCE before all tests
+//		Contactlisting();
+//		hoverAndClickEmail();
+//		clickAttachIcon();
+//		verifyPopupAndTabs();
+	}
+
+	/**
+	 * Runs once per row in SearchDataProvider.getValidSearchData().
+	 * Each invocation should find at least one matching result.
+	 */
+	@Test(dataProvider = "validSearchData", dataProviderClass = SearchDataProvider.class, groups = { "smoke" })
+	public void searchWithValidData(String searchTerm) throws InterruptedException {
+		searchValidData(searchTerm);
+	}
+
+	/**
+	 * Runs once per row in SearchDataProvider.getInvalidSearchData().
+	 * Each invocation should show the "No matching files" empty state.
+	 */
+	@Test(dataProvider = "invalidSearchData", dataProviderClass = SearchDataProvider.class)
+	public void searchWithInvalidData(String searchTerm) throws InterruptedException {
+		searchInvalidData(searchTerm);
+	}
+//	@AfterClass(alwaysRun = true)
+////	@AfterClass
+//	public void teardown() {
+//		tearDown();
+//	}
+
+}

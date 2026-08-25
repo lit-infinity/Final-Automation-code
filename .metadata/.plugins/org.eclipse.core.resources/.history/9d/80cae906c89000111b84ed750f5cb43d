@@ -1,0 +1,98 @@
+package attachFileFromRecord;
+
+import java.time.Duration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+
+public class Uploadedbyfilter extends AttachFromRecordNavigation {
+
+	// ---------- Locators ----------
+
+	
+	private final By Uploadedbydropdwon  = By.xpath("(//input[@class='select2-search__field'])[2]");
+	private final By uploaderwithfile1   =By.xpath("//li[contains(@class,'select2-results__option')][.//span[@title='Kinjal Mogha']]");
+	private final By uploaderwithfile2   =By.xpath("//li[contains(@class,'select2-results__option')][.//span[@title='Vanita Patel']]");
+	private final By uploaderwithoutfile  =By.xpath("//li[contains(@class,'select2-results__option')][.//span[@title='Pinki Mishra']]");
+	
+	private final By FileListing     = By.xpath("//div[@class='attach-file-list-container']");
+	private final By Allfilerows     = By.xpath(".//attach-file-list-item[@class='attach-file-list-item']");
+	private final By Filename        = By.xpath(".//div[@class='file-name']");
+	private final By Uploader        = By.xpath(".//span[@class='meta-item'][3]");
+	  private final By Date                = By.xpath(".//span[@class='meta-item'][1]");
+	    private final By Size                = By.xpath(".//span[@class='meta-item'][2]");
+
+	private WebDriverWait getWait() {
+		return new WebDriverWait(driver, Duration.ofSeconds(20));
+	}
+
+	
+
+	/**
+	 * Verifies every row in the listing shows expectedUploader as the
+	 * "Uploaded by" value, after the dropdown filter has been applied.
+	 */
+	public void filterBySingleUploader(String expectedUploader) {
+		
+		WebDriverWait wait = getWait();
+		wait.until(ExpectedConditions.visibilityOfElementLocated(Uploadedbydropdwon));
+		driver.findElement(Uploadedbydropdwon).click();
+		System.out.println("dropdown is clicked");
+		driver .findElement(uploaderwithfile1).click();
+		System.out.println("Selected 'Kinjal Mogha' from Uploaded by filter");
+
+		wait.until(ExpectedConditions.visibilityOfElementLocated(Allfilerows));
+
+		List<WebElement> rows = driver.findElement(FileListing).findElements(Allfilerows);
+		Assert.assertTrue(!rows.isEmpty(), "No file rows found after filtering by uploader: " + expectedUploader);
+		System.out.println("Total rows after filter: " + rows.size());
+
+		for (WebElement row : rows) {
+			String fileName = row.findElement(Filename).getText().trim();
+			String uploader = row.findElement(Uploader).getText().trim();
+
+			Assert.assertEquals(uploader, expectedUploader,
+					"File '" + fileName + "' was uploaded by '" + uploader
+					+ "' but expected only files from '" + expectedUploader + "'");
+			System.out.println("Verified '" + fileName + "' uploaded by " + uploader);
+		}
+
+		System.out.println("All " + rows.size() + " file(s) verified as uploaded by: " + expectedUploader);
+	}
+	
+	public void originalstate() throws InterruptedException {
+		driver.findElement(Uploadedbydropdwon).click();
+		System.out.println("dropdown is clicked");
+		System.out.print("selected user is successfully deselecteted");
+		Thread.sleep(20);
+		
+		List<WebElement> allFileRows = driver.findElement(FileListing).findElements(Allfilerows);
+        System.out.println("Total files found: " + allFileRows.size());
+        Assert.assertTrue(allFileRows.size() > 0, "No file rows found!");
+
+        for (WebElement row : allFileRows) {
+
+            // Verify row data
+            String fileName = row.findElement(Filename).getText().trim();
+            String date     = row.findElement(Date).getText().trim();
+            String size     = row.findElement(Size).getText().trim();
+            String uploader = row.findElement(Uploader).getText().trim();
+
+            Assert.assertFalse(fileName.isEmpty(), "File name empty");
+            Assert.assertFalse(date.isEmpty(),     "Date empty");
+            Assert.assertFalse(size.isEmpty(),     "Size empty");
+            Assert.assertFalse(uploader.isEmpty(), "Uploader empty");
+            System.out.println("Row verified: " + fileName + " | " + date + " | " + size + " | " + uploader);
+        }
+		
+		
+		
+
+}
+}

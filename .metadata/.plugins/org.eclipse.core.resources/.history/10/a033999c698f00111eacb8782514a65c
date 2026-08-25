@@ -1,0 +1,24 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="SmokeAndRegressionSuite" parallel="true" thread-count="2">
+    <test name="SmokeAndRegressionTests">
+    
+    
+        <groups>
+            <run>
+                <include name="smoke"/>
+            </run>
+        </groups>
+
+      
+        <classes>
+
+            <!-- Add your test classes here -->
+
+            
+            <class name="testAttachFileFromRecord.testSearch"/>
+            <class name="testAttachFileFromRecord.testThisRecord"/>
+
+        </classes>
+        
+    </test>
+</suite>

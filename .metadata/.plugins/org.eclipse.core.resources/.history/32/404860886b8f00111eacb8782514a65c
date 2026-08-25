@@ -1,0 +1,123 @@
+package attachFileFromRecord;
+
+import java.time.Duration;
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+
+import contact.contactlisting;
+
+public class AttachFromRecordNavigation extends contactlisting {
+	
+	private final By Email =By.xpath("(//a[@title='Click to send email'])[1]");
+	private final By Attachicon = By.xpath("//button[@id='attachFiles-1']");
+	private final By Addfilefromrecord = By.xpath("//*[contains(text(),'Attach files from record')]");
+	private final By modelpopup =By.tagName("ngb-modal-window");
+    private final By headertext =By.xpath(".//h4[contains(text(),'Attach files')]");
+    private final By thisrecord =By.xpath(".//a[contains(text(),'This Record')]");
+    private final By associatedDeals =By.xpath(".//a[contains(text(),'Associated Deals')]");
+    private final By associatedTickets =By.xpath(".//a[contains(text(),'Associated Tickets')]");
+	
+	
+
+    public static boolean loggedIn = false;
+    public static boolean navigated = false;
+    
+   // commentout below two lines for parrall run 
+    
+    protected  boolean loggedIn = false;
+    protected  boolean navigated = false;                
+//    
+    public synchronized void loginOnce() throws Exception {
+        if (!loggedIn) {
+            validLogin();
+            loggedIn = true;
+        } else {
+            System.out.println("Already logged in — skipping login");
+        }
+    }
+    
+    public synchronized void navigateToFileListingOnce() throws Exception {   // ✅ add this whole method
+        if (!navigated) {
+            Contactlisting();
+            hoverAndClickEmail();
+            clickAttachIcon();
+            verifyPopupAndTabs();
+            navigated = true;
+        } else {
+            System.out.println("Already navigated to file listing screen — skipping navigation");
+        }
+    }
+//	protected WebDriverWait wait;
+//	public AttachFromRecordNavigation() {
+//        wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+//    }
+
+	
+	public void hoverAndClickEmail() throws InterruptedException {
+
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+	    WebElement Emailadd = wait.until(ExpectedConditions.elementToBeClickable(Email));
+	    Emailadd.click();
+	    System.out.println("Clicked on the email address");
+	    Thread.sleep(2000);
+	}
+	
+		
+	public void clickAttachIcon() throws InterruptedException {
+		
+		WebElement attachicon = driver.findElement(Attachicon);
+	    WebElement svgInsideBtn = attachicon.findElement(By.tagName("svg"));
+	    svgInsideBtn.click();
+	    System.out.println("Clicked the attach icon");
+	    
+//	    wait.until(ExpectedConditions.visibilityOfElementLocated(Addfilefromrecord));
+		driver.findElement(Addfilefromrecord).click();
+		System.out.println("Clicked the Add file from record");
+		Thread.sleep(3000);		
+	}
+	
+	public void verifyPopupAndTabs() throws InterruptedException {
+
+	    // Step 1 - Wait for popup using JavaScript executor
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+	    
+	    wait.until(ExpectedConditions.presenceOfElementLocated(modelpopup));
+	    Thread.sleep(2000); 
+	    
+	    // Step 2 - Find popup
+	    WebElement popup = driver.findElement(modelpopup);
+	
+	    // Step 3 - Verify header text
+	    WebElement header = popup.findElement(headertext);
+	    
+	    
+	    Assert.assertTrue(header.isDisplayed(), "Attach files popup is not visible");
+	    System.out.println("Popup verified: " + header.getText().trim());
+
+	    // Step 4 - Verify 3 tabs
+	    WebElement thisRecord = popup.findElement(thisrecord);
+	    WebElement assocDeals = popup.findElement(associatedDeals);
+	    WebElement assocTickets = popup.findElement(associatedTickets);
+
+	    Assert.assertTrue(thisRecord.isDisplayed(), "This Record tab not visible");
+	    Assert.assertTrue(assocDeals.isDisplayed(), "Associated Deals tab not visible");
+	    Assert.assertTrue(assocTickets.isDisplayed(), "Associated Tickets tab not visible");
+	    System.out.println("All 3 tabs verified successfully");
+
+	    // Step 5 - Verify default active tab is This Record
+	    String activeClass = thisRecord.getAttribute("class");
+	    System.out.println("check this class "+ activeClass);
+	    Assert.assertTrue(activeClass.contains("active"), 
+	        "This Record is not the default active tab");
+	    System.out.println("Default tab verified: This Record is active");
+	}
+		  	
+
+}

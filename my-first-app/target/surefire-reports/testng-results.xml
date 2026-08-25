@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="0" total="19" passed="18" failed="1" skipped="0">
+  <reporter-output>
+  </reporter-output>
+  <suite started-at="2026-08-05T23:49:21 IST" name="RegressionSuite" finished-at="2026-08-05T23:50:54 IST" duration-ms="93176">
+    <groups>
+      <group name="smoke">
+        <method signature="testuploadedbyfilter.singleuploader()[pri:1, instance:testAttachFileFromRecord.testuploadedbyfilter@4681c175]" name="singleuploader" class="testAttachFileFromRecord.testuploadedbyfilter"/>
+        <method signature="testuploadedbyfilter.Emptystate()[pri:3, instance:testAttachFileFromRecord.testuploadedbyfilter@4681c175]" name="Emptystate" class="testAttachFileFromRecord.testuploadedbyfilter"/>
+        <method signature="testuploadedbyfilter.testFilterByMultipleUploaders()[pri:4, instance:testAttachFileFromRecord.testuploadedbyfilter@4681c175]" name="testFilterByMultipleUploaders" class="testAttachFileFromRecord.testuploadedbyfilter"/>
+        <method signature="testuploadedbyfilter.testSelectAllShowsAllFiles()[pri:5, instance:testAttachFileFromRecord.testuploadedbyfilter@4681c175]" name="testSelectAllShowsAllFiles" class="testAttachFileFromRecord.testuploadedbyfilter"/>
+        <method signature="testSearch.searchWithValidData(java.lang.String)[pri:0, instance:testAttachFileFromRecord.testSearch@5b218417]" name="searchWithValidData" class="testAttachFileFromRecord.testSearch"/>
+        <method signature="testThisRecord.filelisting()[pri:1, instance:testAttachFileFromRecord.testThisRecord@5032714f]" name="filelisting" class="testAttachFileFromRecord.testThisRecord"/>
+        <method signature="testThisRecord.downloadclick()[pri:2, instance:testAttachFileFromRecord.testThisRecord@5032714f]" name="downloadclick" class="testAttachFileFromRecord.testThisRecord"/>
+        <method signature="testThisRecord.previewclick()[pri:3, instance:testAttachFileFromRecord.testThisRecord@5032714f]" name="previewclick" class="testAttachFileFromRecord.testThisRecord"/>
+        <method signature="testThisRecord.Oversizefile()[pri:4, instance:testAttachFileFromRecord.testThisRecord@5032714f]" name="Oversizefile" class="testAttachFileFromRecord.testThisRecord"/>
+      </group> <!-- smoke -->
+    </groups>
+    <test started-at="2026-08-05T23:49:21 IST" name="RegressionTests" finished-at="2026-08-05T23:50:54 IST" duration-ms="93176">
+      <class name="testAttachFileFromRecord.testThisRecord">
+        <test-method is-config="true" signature="init()[pri:0, instance:testAttachFileFromRecord.testThisRecord@5032714f]" started-at="2026-08-05T23:50:20 IST" name="init" finished-at="2026-08-05T23:50:20 IST" duration-ms="1" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- init -->
+        <test-method signature="filelisting()[pri:1, instance:testAttachFileFromRecord.testThisRecord@5032714f]" started-at="2026-08-05T23:50:20 IST" name="filelisting" finished-at="2026-08-05T23:50:21 IST" duration-ms="1650" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- filelisting -->
+        <test-method signature="downloadclick()[pri:2, instance:testAttachFileFromRecord.testThisRecord@5032714f]" started-at="2026-08-05T23:50:21 IST" name="downloadclick" finished-at="2026-08-05T23:50:32 IST" duration-ms="11025" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- downloadclick -->
+        <test-method signature="previewclick()[pri:3, instance:testAttachFileFromRecord.testThisRecord@5032714f]" started-at="2026-08-05T23:50:32 IST" name="previewclick" finished-at="2026-08-05T23:50:39 IST" duration-ms="6375" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- previewclick -->
+        <test-method signature="Attachbuttonstate()[pri:4, instance:testAttachFileFromRecord.testThisRecord@5032714f]" started-at="2026-08-05T23:50:39 IST" name="Attachbuttonstate" finished-at="2026-08-05T23:50:39 IST" duration-ms="453" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- Attachbuttonstate -->
+        <test-method signature="Oversizefile()[pri:4, instance:testAttachFileFromRecord.testThisRecord@5032714f]" started-at="2026-08-05T23:50:39 IST" name="Oversizefile" finished-at="2026-08-05T23:50:41 IST" duration-ms="1590" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- Oversizefile -->
+        <test-method signature="selectedfiles()[pri:5, instance:testAttachFileFromRecord.testThisRecord@5032714f]" started-at="2026-08-05T23:50:41 IST" name="selectedfiles" finished-at="2026-08-05T23:50:43 IST" duration-ms="2409" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- selectedfiles -->
+        <test-method signature="filesizelimit()[pri:6, instance:testAttachFileFromRecord.testThisRecord@5032714f]" started-at="2026-08-05T23:50:43 IST" name="filesizelimit" finished-at="2026-08-05T23:50:45 IST" duration-ms="2016" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- filesizelimit -->
+      </class> <!-- testAttachFileFromRecord.testThisRecord -->
+      <class name="testAttachFileFromRecord.testuploadedbyfilter">
+        <test-method is-config="true" signature="init()[pri:0, instance:testAttachFileFromRecord.testuploadedbyfilter@4681c175]" started-at="2026-08-05T23:50:45 IST" name="init" finished-at="2026-08-05T23:50:45 IST" duration-ms="1" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- init -->
+        <test-method signature="singleuploader()[pri:1, instance:testAttachFileFromRecord.testuploadedbyfilter@4681c175]" started-at="2026-08-05T23:50:45 IST" name="singleuploader" finished-at="2026-08-05T23:50:47 IST" duration-ms="1431" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- singleuploader -->
+        <test-method signature="Origanalfilestate()[pri:2, instance:testAttachFileFromRecord.testuploadedbyfilter@4681c175]" started-at="2026-08-05T23:50:47 IST" name="Origanalfilestate" finished-at="2026-08-05T23:50:49 IST" depends-on-methods="testAttachFileFromRecord.testuploadedbyfilter.singleuploader" duration-ms="2337" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- Origanalfilestate -->
+        <test-method signature="Emptystate()[pri:3, instance:testAttachFileFromRecord.testuploadedbyfilter@4681c175]" started-at="2026-08-05T23:50:49 IST" name="Emptystate" finished-at="2026-08-05T23:50:50 IST" duration-ms="1286" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- Emptystate -->
+        <test-method signature="testFilterByMultipleUploaders()[pri:4, instance:testAttachFileFromRecord.testuploadedbyfilter@4681c175]" started-at="2026-08-05T23:50:50 IST" name="testFilterByMultipleUploaders" finished-at="2026-08-05T23:50:52 IST" duration-ms="1806" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testFilterByMultipleUploaders -->
+        <test-method signature="testSelectAllShowsAllFiles()[pri:5, instance:testAttachFileFromRecord.testuploadedbyfilter@4681c175]" started-at="2026-08-05T23:50:52 IST" name="testSelectAllShowsAllFiles" finished-at="2026-08-05T23:50:53 IST" duration-ms="1430" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testSelectAllShowsAllFiles -->
+        <test-method is-config="true" signature="teardown()[pri:0, instance:testAttachFileFromRecord.testuploadedbyfilter@4681c175]" started-at="2026-08-05T23:50:53 IST" name="teardown" finished-at="2026-08-05T23:50:54 IST" duration-ms="467" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- teardown -->
+      </class> <!-- testAttachFileFromRecord.testuploadedbyfilter -->
+      <class name="testAttachFileFromRecord.testSearch">
+        <test-method is-config="true" signature="init()[pri:0, instance:testAttachFileFromRecord.testSearch@5b218417]" started-at="2026-08-05T23:49:21 IST" name="init" finished-at="2026-08-05T23:49:47 IST" duration-ms="26628" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- init -->
+        <test-method signature="searchWithInvalidData(java.lang.String)[pri:0, instance:testAttachFileFromRecord.testSearch@5b218417]" started-at="2026-08-05T23:49:47 IST" name="searchWithInvalidData" data-provider="invalidSearchData" finished-at="2026-08-05T23:49:51 IST" duration-ms="3618" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[xyzabc123]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- searchWithInvalidData -->
+        <test-method signature="searchWithInvalidData(java.lang.String)[pri:0, instance:testAttachFileFromRecord.testSearch@5b218417]" started-at="2026-08-05T23:49:51 IST" name="searchWithInvalidData" data-provider="invalidSearchData" finished-at="2026-08-05T23:49:53 IST" duration-ms="2289" status="FAIL">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[test]]>
+              </value>
+            </param>
+          </params>
+          <exception class="java.lang.AssertionError">
+            <message>
+              <![CDATA[Expected 'No matching files' for invalid search term 'test' but got 2 result(s) instead]]>
+            </message>
+            <full-stacktrace>
+              <![CDATA[java.lang.AssertionError: Expected 'No matching files' for invalid search term 'test' but got 2 result(s) instead
+at org.testng.Assert.fail(Assert.java:111)
+at attachFileFromRecord.Search.searchInvalidData(Search.java:133)
+at testAttachFileFromRecord.testSearch.searchWithInvalidData(testSearch.java:50)
+at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:139)
+at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:664)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:228)
+at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
+at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:961)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:201)
+at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:148)
+at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:128)
+at java.base/java.util.ArrayList.forEach(ArrayList.java:1541)
+at org.testng.TestRunner.privateRun(TestRunner.java:819)
+at org.testng.TestRunner.run(TestRunner.java:619)
+at org.testng.SuiteRunner.runTest(SuiteRunner.java:443)
+at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:437)
+at org.testng.SuiteRunner.privateRun(SuiteRunner.java:397)
+at org.testng.SuiteRunner.run(SuiteRunner.java:336)
+at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:95)
+at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+at org.testng.TestNG.runSuitesLocally(TestNG.java:1228)
+at org.testng.TestNG.runSuites(TestNG.java:1134)
+at org.testng.TestNG.run(TestNG.java:1101)
+at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:308)
+at org.apache.maven.surefire.testng.TestNGXmlTestSuite.execute(TestNGXmlTestSuite.java:71)
+at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:113)
+at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+]]>
+            </full-stacktrace>
+          </exception> <!-- java.lang.AssertionError -->
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- searchWithInvalidData -->
+        <test-method signature="searchWithInvalidData(java.lang.String)[pri:0, instance:testAttachFileFromRecord.testSearch@5b218417]" started-at="2026-08-05T23:49:54 IST" name="searchWithInvalidData" data-provider="invalidSearchData" finished-at="2026-08-05T23:49:57 IST" duration-ms="3757" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[zzz_random_string_!!]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- searchWithInvalidData -->
+        <test-method signature="searchWithValidData(java.lang.String)[pri:0, instance:testAttachFileFromRecord.testSearch@5b218417]" started-at="2026-08-05T23:49:57 IST" name="searchWithValidData" data-provider="validSearchData" finished-at="2026-08-05T23:50:03 IST" duration-ms="5526" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[test]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- searchWithValidData -->
+        <test-method signature="searchWithValidData(java.lang.String)[pri:0, instance:testAttachFileFromRecord.testSearch@5b218417]" started-at="2026-08-05T23:50:03 IST" name="searchWithValidData" data-provider="validSearchData" finished-at="2026-08-05T23:50:08 IST" duration-ms="5553" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[2.jpg]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- searchWithValidData -->
+        <test-method signature="searchWithValidData(java.lang.String)[pri:0, instance:testAttachFileFromRecord.testSearch@5b218417]" started-at="2026-08-05T23:50:08 IST" name="searchWithValidData" data-provider="validSearchData" finished-at="2026-08-05T23:50:14 IST" duration-ms="5565" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[testmo]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- searchWithValidData -->
+        <test-method signature="searchWithValidData(java.lang.String)[pri:0, instance:testAttachFileFromRecord.testSearch@5b218417]" started-at="2026-08-05T23:50:14 IST" name="searchWithValidData" data-provider="validSearchData" finished-at="2026-08-05T23:50:20 IST" duration-ms="5542" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[dev_sp]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- searchWithValidData -->
+      </class> <!-- testAttachFileFromRecord.testSearch -->
+    </test> <!-- RegressionTests -->
+  </suite> <!-- RegressionSuite -->
+</testng-results>

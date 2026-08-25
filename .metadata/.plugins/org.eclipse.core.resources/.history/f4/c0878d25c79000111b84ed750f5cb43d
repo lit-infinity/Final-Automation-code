@@ -1,0 +1,50 @@
+package testAttachFileFromRecord;
+
+import java.util.Arrays;
+
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
+
+import attachFileFromRecord.Uploadedbyfilter;
+import listeners.ReportListener;
+
+@Listeners(ReportListener.class)
+public class testuploadedbyfilter extends Uploadedbyfilter {
+
+	// Names as shown in the "Uploaded by" dropdown for this record.
+	// Adjust these if the actual uploaders on the test record differ.
+	private static final String UPLOADER_WITHout_FILES    = "Vanita Patel";
+	private static final String UPLOADER_WITH_FILES = "Kinjal Mogha";
+	private static final String SECOND_UPLOADER        = "Pinki Mishra";
+
+	@BeforeClass(alwaysRun = true)
+	public void init() throws Exception {
+		System.out.println(">>> testuploadedbyfilter INIT ENTERED <<<");
+		setup();
+		loginOnce();
+		navigateToFileListingOnce();
+	}
+
+	/**
+	 * Scenario 1: on opening the popup, filter should show "All" and every file should be visible.
+	 */
+	@Test(priority = 1, groups = { "smoke" }, enabled = true)
+	public void singleuploader() {
+		filterBySingleUploader(UPLOADER_WITH_FILES);
+	}
+	
+	@Test(priority = 2, groups = { "smoke" }, enabled = true, dependsOnMethods = {"filterBySingleUploader"})
+	public void Origanalfilestate() {
+		originalstate();
+	}
+
+
+
+	@AfterClass(alwaysRun = true)
+	public void teardown() {
+		tearDown();
+	}
+
+}

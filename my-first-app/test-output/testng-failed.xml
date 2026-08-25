@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite thread-count="2" name="Failed suite [RegressionSuite]" guice-stage="DEVELOPMENT">
+  <test thread-count="2" name="RegressionTests(failed)">
+    <classes>
+      <class name="testAttachFileFromRecord.testSearch">
+        <methods>
+          <include name="searchWithInvalidData" invocation-numbers="1"/>
+          <include name="init"/>
+        </methods>
+      </class> <!-- testAttachFileFromRecord.testSearch -->
+    </classes>
+  </test> <!-- RegressionTests(failed) -->
+</suite> <!-- Failed suite [RegressionSuite] -->

@@ -1,0 +1,495 @@
+package attachFileFromRecord;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+
+public class ThisRecord extends AttachFromRecordNavigation {
+
+    private final By FileListing         = By.xpath("//div[@class='attach-file-list-container']");
+    private final By Allfilerows         = By.xpath(".//attach-file-list-item[@class='attach-file-list-item']");
+    private final By Filename            = By.xpath(".//div[@class='file-name']");
+    private final By Date                = By.xpath(".//span[@class='meta-item'][1]");
+    private final By Size                = By.xpath(".//span[@class='meta-item'][2]");
+    private final By Uploader            = By.xpath(".//span[@class='meta-item'][3]");
+    private final By emptyStateContainer = By.xpath("//div[@class='empty-state w-full']");
+    private final By emptyStateIcon      = By.xpath("//div[@class='empty-state-icon']");
+    private final By emptyStateTitle     = By.xpath("//h5[@class='empty-state-title']");
+    private final By emptyStateSubText   = By.xpath("//div[contains(text(),'Upload a file to this record')]");
+    private final By downloadIcon 		 = By.xpath(".//button[contains(@class,'action-icon')][last()]");
+    private final By actionButtons 		 = By.xpath(".//button[contains(@class,'action-icon')]");
+    private final By AttachBtnstate		 = By.xpath("//button[contains(text(),'Attach selected')]");
+    private final By Checkboxenabled	 = By.xpath("//attach-file-list-item[@class='attach-file-list-item']" +
+            										"//div[contains(@class,'single-checkbox') and not(contains(@class,'disabled'))]");
+//    //attach-file-list-item//div[contains(@class,'single-checkbox') and not(contains(@class,'disabled'))]//input
+    private final By Checkboxdisabled    = By.xpath("//attach-file-list-item//div[contains(@class,'single-checkbox') and contains(@class,'disabled')]//input");
+    private final By tooltip			 = By.xpath("//div[contains(text(),'File size exceeds')]");
+    private final By errMsg				 = By.xpath("//div[contains(text(),' File size limit exceeded (30MB) ')]");
+    private final  By Selectionheader	 = By.xpath("//div[contains(@class,'d-flex v-center s-m-l-semi-sm s-m-t-xxs')]");
+    private final By CrossIcon			 = By.xpath("//a[@class='new-close-btn d-flex h-center v-center s-m-t-xxs']");
+    private final By SelectAllButton 	 = By.xpath("//button[normalize-space()='Select All']");
+ 
+    
+    
+
+    private List<WebElement> allFileRows;
+
+    public void verifyFileListDisplayed() {
+
+        // Check empty state or file list
+        boolean isEmpty = !driver.findElements(emptyStateContainer).isEmpty();
+
+        if (isEmpty) {
+            verifyEmptyState();
+        } else {
+            verifyFileList();
+        }
+    }
+
+    // -----------------------------------------------
+    private void verifyEmptyState() {
+    // -----------------------------------------------
+
+        Assert.assertTrue(driver.findElement(emptyStateContainer).isDisplayed(), "Empty container not visible");
+        Assert.assertTrue(driver.findElement(emptyStateIcon).isDisplayed(), "Empty icon not visible");
+
+        String title = driver.findElement(emptyStateTitle).getText().trim();
+        Assert.assertEquals(title, "No files found", "Wrong title");
+        System.out.println("Empty state title: " + title);
+
+        String subtext = driver.findElement(emptyStateSubText).getText().trim();
+        Assert.assertEquals(subtext, "Upload a file to this record to see it here.", "Wrong subtext");
+        System.out.println("Empty state verified successfully");
+    }
+
+    // -----------------------------------------------
+    private void verifyFileList() {
+    // -----------------------------------------------
+
+        allFileRows = driver.findElement(FileListing).findElements(Allfilerows);
+        System.out.println("Total files found: " + allFileRows.size());
+        Assert.assertTrue(allFileRows.size() > 0, "No file rows found!");
+
+        for (WebElement row : allFileRows) {
+
+            // Verify row data
+            String fileName = row.findElement(Filename).getText().trim();
+            String date     = row.findElement(Date).getText().trim();
+            String size     = row.findElement(Size).getText().trim();
+            String uploader = row.findElement(Uploader).getText().trim();
+
+            Assert.assertFalse(fileName.isEmpty(), "File name empty");
+            Assert.assertFalse(date.isEmpty(),     "Date empty");
+            Assert.assertFalse(size.isEmpty(),     "Size empty");
+            Assert.assertFalse(uploader.isEmpty(), "Uploader empty");
+            System.out.println("Row verified: " + fileName + " | " + date + " | " + size + " | " + uploader);
+
+            // Verify file icon
+            verifyFileIcon(row, fileName);
+        }
+    }
+
+    // -----------------------------------------------
+    private void verifyFileIcon(WebElement row, String fileName) {
+    // -----------------------------------------------
+
+        // Get extension
+        String ext = fileName.contains(".")
+                ? fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase().trim()
+                : "";
+
+        // Get icon class
+        String iconClass = row.findElement(
+                By.xpath(".//span[contains(@class,'icon-file-')]"))
+                .getAttribute("class").toLowerCase();
+
+        System.out.println("File: " + fileName + " | Extension: " + ext + " | Icon: " + iconClass);
+
+        // Verify correct icon
+        switch (ext) {
+            case "pdf":
+                Assert.assertTrue(iconClass.contains("icon-file-pdf"), "Wrong icon: " + fileName); break;
+            case "jpg": case "jpeg": case "png": case "webp": case "gif":
+                Assert.assertTrue(iconClass.contains("icon-file-image"), "Wrong icon: " + fileName); break;
+            case "xlsx": case "csv":
+                Assert.assertTrue(iconClass.contains("icon-file-xls"), "Wrong icon: " + fileName); break;
+            case "docx": case "doc": case "odt": case "ods": case "odp":
+                Assert.assertTrue(iconClass.contains("icon-file-doc"), "Wrong icon: " + fileName); break;
+            case "pptx": case "ppt":
+                Assert.assertTrue(iconClass.contains("icon-file-ppt"), "Wrong icon: " + fileName); break;
+            default:
+                System.out.println("Unknown extension: " + ext + " - skipping"); break;
+        }
+    }
+    
+    public void verifyDownloadIcon() throws InterruptedException {
+
+        allFileRows = driver.findElement(FileListing).findElements(Allfilerows);
+        System.out.println("Total rows found: " + allFileRows.size());
+
+        // Part 1 - Verify download icon visible for ALL rows
+        for (WebElement row : allFileRows) {
+            WebElement downloadBtn = row.findElement(downloadIcon);
+            Assert.assertTrue(downloadBtn.isDisplayed(), "Download icon not visible");
+            System.out.println("Download icon verified for: " + row.findElement(Filename).getText().trim());
+        }
+
+        // Part 2 - Click download on first row only
+        WebElement firstRow = allFileRows.get(0);
+        WebElement downloadBtn = firstRow.findElement(downloadIcon);
+
+        Set<String> originalTabs = driver.getWindowHandles();
+        downloadBtn.click();
+        System.out.println("Clicked download on first file");
+
+        WebDriverWait tabWait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        tabWait.until(ExpectedConditions.numberOfWindowsToBe(originalTabs.size() + 1));
+        System.out.println("New tab opened - download verified");
+
+        Set<String> newTabs = driver.getWindowHandles();
+        String newTabHandle = "";
+        for (String tab : newTabs) {
+            if (!originalTabs.contains(tab)) {
+                newTabHandle = tab;
+                break;
+            }
+        }
+        driver.switchTo().window(newTabHandle);
+        Thread.sleep(6000);
+
+        try {
+            driver.close();
+            System.out.println("Closed new tab");
+        } catch (NoSuchWindowException e) {
+            System.out.println("Tab closed automatically");
+        } finally {
+            Thread.sleep(2000);
+            driver.switchTo().window(originalTabs.iterator().next());
+            System.out.println("Switched back to original tab");
+            Thread.sleep(2000);
+        }
+    }
+    
+    
+    public void verifyPreviewIcon() throws InterruptedException {
+
+        WebElement parentContainer = driver.findElement(FileListing);
+        allFileRows = parentContainer.findElements(Allfilerows);
+        System.out.println("Total rows found: " + allFileRows.size());
+
+        boolean previewTested = false;
+
+        for (int i = 0; i < allFileRows.size(); i++) {
+
+            // Re-fetch rows to avoid stale element
+            allFileRows = driver.findElement(FileListing).findElements(Allfilerows);
+            WebElement rowdata = allFileRows.get(i);
+
+            // Get file name and extension
+            String fileNameText = rowdata.findElement(Filename).getText().trim();
+            String extension = fileNameText.contains(".")
+                    ? fileNameText.substring(fileNameText.lastIndexOf(".") + 1).toLowerCase().trim()
+                    : "";
+            System.out.println("File: " + fileNameText + " | Extension: " + extension);
+
+            // Get action buttons
+            List<WebElement> buttons = rowdata.findElements(actionButtons);
+            System.out.println("Button count: " + buttons.size());
+
+            // Check if image or not
+            boolean isImage = extension.matches("jpg|jpeg|png|webp|gif");
+
+            if (isImage && buttons.size() == 2 && !previewTested) {
+
+                // Verify 2 buttons exist + click preview
+                System.out.println("Preview icon verified for: " + fileNameText);
+                Thread.sleep(1000);
+
+                WebElement previewBtn = rowdata.findElement(
+                    By.xpath(".//button[contains(@class,'action-icon')][1]")
+                );
+                System.out.println("Preview button found: " + previewBtn.isDisplayed());
+
+                previewBtn.click();
+                System.out.println("Clicked preview button successfully");
+                Thread.sleep(2000);
+
+                // Verify image visible
+                WebElement previewImage = driver.findElement(By.xpath("//img[@class='preview-image']"));
+                Assert.assertTrue(previewImage.isDisplayed(), "Preview image not visible");
+                System.out.println("Preview image verified");
+
+                // Close preview
+                Thread.sleep(2000);
+                driver.findElement(By.xpath("//button[contains(text(),'Close Preview')]")).click();
+                System.out.println("Preview closed");
+
+                WebElement attachHeader = driver.findElement(
+                	    By.xpath("//h4[contains(text(),'Attach files')]")
+                	);
+                System.out.println("Successfully redirected to file listing screen");
+                Assert.assertTrue(attachHeader.isDisplayed(), "Not redirected back to file listing");
+
+                previewTested = true;
+
+            } else if (isImage && buttons.size() == 2 && previewTested) {
+
+                // Preview already tested — just verify 2 buttons
+                System.out.println("Preview icon verified for: " + fileNameText);
+                
+
+            } else if (isImage && buttons.size() != 2) {
+
+                // Image file but wrong button count
+                Assert.fail("Image should have preview + download icons: " + fileNameText);
+
+            } else {
+
+                // Non image — verify only 1 button
+                Assert.assertEquals(buttons.size(), 1, "Non image should have download only: " + fileNameText);
+                System.out.println("No preview icon correctly for: " + fileNameText);
+
+            }
+            
+        }
+    }
+    
+    
+    //Verify "Attach selected" button is DISABLED when no file is selected
+    
+    public void verifyAttachButtonDefaultDisabled() throws InterruptedException {
+    	
+//    	check when no file is selected button should be disabled
+    	WebElement AttachBtn = driver.findElement(AttachBtnstate);
+    	Assert.assertFalse(AttachBtn.isEnabled(),"button is not disabled");
+    	System.out.println("button current state is when anyfile is not selected "+ AttachBtn.isEnabled());
+    	
+//    	checking the checkbox status
+    	
+    	List<WebElement> allCheckboxes = driver.findElements(Checkboxenabled);
+    	//checking the total enabled checbox
+    	System.out.println("Total enabled checkboxes: " + allCheckboxes.size());
+
+    	//click the checbox
+    	allCheckboxes.get(0).click();
+    	System.out.println("Checbox is selected");
+    	
+    	//checking the status of the attachbutton
+    	
+    	Assert.assertTrue(AttachBtn.isEnabled(),"button is not enabled");
+    	System.out.println("button current state when one file is selected "+ AttachBtn.isEnabled());
+    	
+    	//again deselect the checkbox and check the attachbutton status
+    	
+    	allCheckboxes.get(0).click();
+    	System.out.println("Checkbox is deselected");
+    	
+       // checking the status of the attachbutton
+    	Assert.assertFalse(AttachBtn.isEnabled(),"button is not disabled");
+    	System.out.println("button current state when user deselect the file "+ AttachBtn.isEnabled());
+    	  	
+        
+    }
+    
+    // checking the functionality when any file is over 30 mb
+    
+    public void verifyOversizedFileCheckboxDisabled() throws InterruptedException {
+    	
+    	//Find all file rows
+    	
+    	allFileRows = driver.findElement(FileListing).findElements(Allfilerows);
+        System.out.println("Total files found: " + allFileRows.size());
+        Assert.assertTrue(allFileRows.size() > 0, "No file rows found!");
+        
+        //Loop through each row to find file over 30MB for each row in fileRows:
+        
+        for (WebElement Oversized : allFileRows) {
+            String size = Oversized.findElement(Size).getText().trim();
+            double number = Double.parseDouble(size.replaceAll("[^0-9.]", ""));
+            double sizeInMB = size.contains("KB") ? number / 1024 : size.contains("GB") ? number * 1024 : number;
+
+            if (sizeInMB > 30) {
+
+                // PART 1 — Checkbox is Disabled
+                WebElement checkbox = Oversized.findElement(Checkboxdisabled);  // 
+                Assert.assertFalse(checkbox.isEnabled(), "Checkbox is enabled");
+                System.out.println("Checkbox is disabled for file over 30MB");
+
+                // PART 2 — Hover and Verify Tooltip
+                new Actions(driver).moveToElement(checkbox).perform();
+                Thread.sleep(1000);
+                WebElement tooltipElement = driver.findElement(tooltip);
+                Assert.assertTrue(tooltipElement.isDisplayed(), "Tooltip not visible");
+                String tooltipText = tooltipElement.getText().trim();
+                Assert.assertEquals(tooltipText, "File size exceeds the 30MB limit and cannot be selected", "Tooltip not matched");
+                System.out.println("Tooltip verified: " + tooltipText);
+
+                // PART 3 — File Cannot Be Selected
+                JavascriptExecutor js = (JavascriptExecutor) driver;
+                js.executeScript("arguments[0].click();", checkbox);
+                Assert.assertFalse(checkbox.isSelected(), "Checkbox should not be selected");
+                Assert.assertEquals(checkbox.getAttribute("value"), "false", "Value should be false");
+                System.out.println("File over 30MB cannot be selected");
+
+                // POINT 9 — Error Message Verification
+                WebElement errorElement = Oversized.findElement(errMsg);  
+                Assert.assertTrue(errorElement.isDisplayed(), "Error message not visible");
+                String errMsgText = errorElement.getText().trim();
+                Assert.assertEquals(errMsgText, "File size limit exceeded (30MB)", "Error message not matched");
+                String errorColor = errorElement.getCssValue("color");
+                Assert.assertEquals(errorColor, "rgba(153, 27, 27, 1)", "Error color is not red");
+                System.out.println("30MB error message verified: " + errMsgText);
+
+                break;  
+            }
+        }
+        }
+        
+        //File Selection — Count & Size Display
+        
+    public void verifyFileSelectionCountAndSize() {
+
+        // Find all file rows
+        allFileRows = driver.findElement(FileListing).findElements(Allfilerows);
+        System.out.println("Total files found: " + allFileRows.size());
+        Assert.assertTrue(allFileRows.size() > 0, "No file rows found!");
+
+        List<WebElement> selectedFiles = new ArrayList<>();
+        int totalSize = 0;
+        int eligibleCount = 0; // NEW - added to track eligible files
+
+        for (WebElement fileRow : allFileRows) {
+            String size = fileRow.findElement(Size).getText().trim();
+            double number = Double.parseDouble(size.replaceAll("[^0-9.]", ""));
+            double sizeInMB = size.contains("KB") ? number / 1024 : size.contains("GB") ? number * 1024 : number;
+
+            // STEP 1 - If file is more than 30MB, SKIP this file
+            if (sizeInMB >= 30) {
+                System.out.println("Skipping file, size over 30MB: " + size);
+                continue;
+            }
+
+            else {
+                // STEP 2 - Click the checkbox
+                WebElement checkbox = fileRow.findElement(Checkboxenabled);
+                checkbox.click();
+
+                // STEP 3 - Add file to selected list
+                selectedFiles.add(fileRow);
+                eligibleCount++; // NEW - count eligible files here itself
+
+                // STEP 4 - Add up total size
+                totalSize += (int)(sizeInMB * 1024);
+
+                // STEP 5 - Verify count and size in header
+                WebElement header = driver.findElement(Selectionheader);
+                String headerText = header.getText();
+                System.out.println("Header text: " + headerText);
+
+                Assert.assertTrue(headerText.contains(selectedFiles.size() + " Selected"),
+                    "Count not matched! Expected: " + selectedFiles.size());
+            }
+        }
+
+
+        // ========== Click Select All and verify using eligibleCount from same loop ==========
+        driver.findElement(SelectAllButton).click();
+        System.out.println("Clicked Select All");
+
+        // reusing eligibleCount from loop above - no new loop needed!
+        WebElement header = driver.findElement(Selectionheader);
+        String finalHeaderText = header.getText();
+        System.out.println("Header text after Select All: " + finalHeaderText);
+
+        Assert.assertTrue(finalHeaderText.contains(eligibleCount + " Selected"),
+            "Select All count mismatch! Expected: " + eligibleCount);
+        System.out.println("Select All verified! Total eligible files selected: " + eligibleCount);
+        
+        // ========== Click X icon and verify all files deselected ==========
+        driver.findElement(CrossIcon).click();
+        System.out.println("Clicked X icon");
+
+        Assert.assertTrue(driver.findElements(Selectionheader).isEmpty(),
+          "Files are still selected after clicking X!");
+        System.out.println("All files deselected successfully!");
+        
+    }
+      
+      
+      public void verifyTotalSizeLimit() throws InterruptedException {
+
+    	    // Find all file rows
+    	    allFileRows = driver.findElement(FileListing).findElements(Allfilerows);
+    	    int totalSize1 = 0;
+
+    	    for (WebElement fileRow : allFileRows) {
+    	        String size = fileRow.findElement(Size).getText().trim();
+    	        double number = Double.parseDouble(size.replaceAll("[^0-9.]", ""));
+    	        double sizeInMB = size.contains("KB") ? number / 1024 : size.contains("GB") ? number * 1024 : number;
+
+    	        // Skip individual files over 30MB
+    	        if (sizeInMB >= 30) {
+    	            System.out.println("Skipping file, individual size over 30MB: " + size);
+    	            continue;
+    	        }
+
+    	        WebElement checkbox = fileRow.findElement(Checkboxenabled);
+    	        WebElement attachButton = driver.findElement(AttachBtnstate);
+
+    	        // Check if adding this file will exceed 30MB TOTAL
+    	        if ((totalSize1 + (int)(sizeInMB * 1024)) > 30720) {
+
+    	            System.out.println("Total will exceed 30MB if this file selected!");
+
+    	            // Try selecting the file
+    	            checkbox.click();
+
+    	            // Verify Attach button is DISABLED
+    	            Assert.assertFalse(attachButton.isEnabled(),
+    	                "Attach button should be DISABLED! Total exceeds 30MB!");
+    	            System.out.println("Attach button DISABLED as expected!");
+
+    	            // Deselect the file
+    	            checkbox.click();
+    	            System.out.println("File deselected!");
+    	         
+
+    	        } else {
+
+    	            // Select the file
+    	            checkbox.click();
+    	            totalSize1 += (int)(sizeInMB * 1024);
+    	            System.out.println("File selected! Current total: " + totalSize1 + " KB");
+
+    	            // Verify Attach button is ENABLED
+    	            Assert.assertTrue(attachButton.isEnabled(),
+    	                "Attach button should be ENABLED! Total is under 30MB!");
+    	            System.out.println("Attach button ENABLED as expected!");
+    	        }
+    	        
+    	    Thread.sleep(2000);
+    	    }
+    	
+      
+     
+    
+        	
+        	
+        	
+        } //loop
+
+    }  //method 
+    	   	
+    			
+    
+   

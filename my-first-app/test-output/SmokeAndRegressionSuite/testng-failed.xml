@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite thread-count="2" parallel="methods" name="Failed suite [SmokeAndRegressionSuite]" guice-stage="DEVELOPMENT">
+  <test thread-count="2" parallel="methods" name="SmokeAndRegressionTests(failed)">
+    <groups>
+      <run>
+        <include name="smoke"/>
+      </run>
+    </groups>
+    <classes>
+      <class name="testAttachFileFromRecord.testSearch">
+        <methods>
+          <include name="searchWithValidData"/>
+          <include name="init"/>
+        </methods>
+      </class> <!-- testAttachFileFromRecord.testSearch -->
+      <class name="testAttachFileFromRecord.testThisRecord">
+        <methods>
+          <include name="init"/>
+          <include name="filelisting"/>
+          <include name="downloadclick"/>
+          <include name="teardown"/>
+        </methods>
+      </class> <!-- testAttachFileFromRecord.testThisRecord -->
+    </classes>
+  </test> <!-- SmokeAndRegressionTests(failed) -->
+</suite> <!-- Failed suite [SmokeAndRegressionSuite] -->

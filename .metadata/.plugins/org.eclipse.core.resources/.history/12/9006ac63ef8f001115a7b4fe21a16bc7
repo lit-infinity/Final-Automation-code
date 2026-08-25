@@ -1,0 +1,38 @@
+package utilitytest;
+
+import org.testng.annotations.DataProvider;
+
+/**
+ * Central place for all search-related test data used by Search.java.
+ * Keep this class purely data — no driver/UI logic here.
+ */
+public class SearchDataProvider {
+
+	/**
+	 * Terms that are EXPECTED to return at least one matching result
+	 * in the Attach-File list screen.
+	 */
+	@DataProvider(name = "validSearchData")
+	public static Object[][] getValidSearchData() {
+		return new Object[][] {
+				{ "test" },
+				{ "2.jpg" },
+				{ "RO-Handbook" },
+				{ "dev_sp" }
+		};
+	}
+
+	/**
+	 * Terms that are EXPECTED to return NO results, i.e. the
+	 * "No matching files" empty-state message should be shown.
+	 */
+	@DataProvider(name = "invalidSearchData")
+	public static Object[][] getInvalidSearchData() {
+		return new Object[][] {
+				{ "xyzabc123" },
+				{ "test" },
+				{ "zzz_random_string_!!" }
+		};
+	}
+}
+

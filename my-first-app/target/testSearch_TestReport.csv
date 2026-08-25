@@ -1,0 +1,8 @@
+TestCaseName,InputData,Status,Timestamp,ScreenshotPath
+"searchWithInvalidData","xyzabc123",PASS,2026-08-05 23:49:51,""
+"searchWithInvalidData","test",FAIL,2026-08-05 23:49:54,"C:\Users\vanita.patel\eclipse-workspace\my-first-app\target\screenshots\testSearch\searchWithInvalidData_20260805_234953.png"
+"searchWithInvalidData","zzz_random_string_!!",PASS,2026-08-05 23:49:57,""
+"searchWithValidData","test",PASS,2026-08-05 23:50:03,""
+"searchWithValidData","2.jpg",PASS,2026-08-05 23:50:08,""
+"searchWithValidData","testmo",PASS,2026-08-05 23:50:14,""
+"searchWithValidData","dev_sp",PASS,2026-08-05 23:50:20,""

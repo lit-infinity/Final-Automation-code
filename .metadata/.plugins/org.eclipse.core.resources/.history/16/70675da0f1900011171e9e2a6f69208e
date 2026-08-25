@@ -1,0 +1,85 @@
+package testAttachFileFromRecord;
+
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
+import attachFileFromRecord.ThisRecord;
+import listeners.ReportListener;
+
+@Listeners(ReportListener.class)
+public class testThisRecord extends ThisRecord {
+	
+	 
+	
+	 @BeforeClass(alwaysRun = true)
+//	 @BeforeClass
+	    public void init() throws Exception {
+		 	System.out.println(">>> INIT METHOD ENTERED <<<");
+	        setup();       // Browser open and open the login page
+//	        loginEmail = "kinjal.patel@yopmail.com";      //different credentials for parrallel run
+//	        loginPassword = "Demo@123";
+	        loginOnce();
+	        navigateToFileListingOnce();
+	        
+	        
+//	        commentout below code when to run this file seperatly and comment the login and navigate method
+	        
+//	        validLogin();  // Login only ONCE before all tests
+//	        Contactlisting();
+//	        hoverAndClickEmail();
+//	        clickAttachIcon();
+//	        verifyPopupAndTabs();
+//	        System.out.println("END OF INIT - driver is: " + driver + " | hash: " + System.identityHashCode(driver));
+
+	        
+	    }
+	 
+	 @Test(priority=1, enabled = true,groups = { "smoke" })
+	 public void filelisting()throws InterruptedException {
+//		 System.out.println("START OF FILELISTING - driver is: " + driver + " | hash: " + System.identityHashCode(driver));
+
+		 verifyFileListDisplayed();	 
+		 
+	 }
+
+	 
+	 @Test(priority=2, enabled = true,groups = { "smoke" })
+	 public void  downloadclick() throws InterruptedException {
+		 verifyDownloadIcon();
+	 }
+	 @Test(priority=3, enabled = true, groups = { "smoke" })
+	 public void previewclick() throws InterruptedException {
+		 verifyPreviewIcon();
+	 }
+	 
+	 
+	 @Test(priority=4, enabled = true)
+	 public void Attachbuttonstate() throws InterruptedException {
+		 verifyAttachButtonDefaultDisabled();
+	 }
+	 
+	 @Test(priority=4, enabled = true,groups = { "smoke" })
+	 public void Oversizefile() throws InterruptedException {
+		 verifyOversizedFileCheckboxDisabled();
+	 }
+	 
+	 @Test(priority =5, enabled =true) 
+	 public void selectedfiles(){
+		 verifyFileSelectionCountAndSize();
+	 }
+	 
+	 @Test(priority =6, enabled =true) 
+	 public void filesizelimit(){
+		 verifyTotalSizeLimit();
+	 }
+	 
+	    
+	  @AfterClass(alwaysRun = true)
+//	  @AfterClass
+	    public void teardown() {
+	        tearDown();
+	    }
+
+
+}
